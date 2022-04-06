@@ -277,11 +277,11 @@ def chainlink_dailyUniqueCustomersNoChainlink():
     plt.show()
 
 
-# chainlink_dailyFeedRequests()
-# chainlink_consumerFeedRequests()
-# chainlink_consumerFeedRequestsNoChainlink()
-# chainlink_priceFeedsMostRequested()
-# chainlink_priceFeedsMostRequested2()
-chainlink_dailyUniqueCustomersNoChainlink()
+chainlink_dailyFeedRequests()
+chainlink_consumerFeedRequests()
+chainlink_consumerFeedRequestsNoChainlink()
+chainlink_priceFeedsMostRequested()
+chainlink_priceFeedsMostRequested2()
+# chainlink_dailyUniqueCustomersNoChainlink() #
 chainlink_consumerFeedRequestsNoChainlinkBAR()
 # https://dune.xyz/queries/509884/963063
