@@ -154,42 +154,6 @@ def chainlink_consumerFeedRequestsNoChainlinkBAR():
     plt.show()
 
 
-def chainlink_priceFeedsMostRequested():
-    # https://dune.xyz/queries/509884/963063
-    result_id = dune.query_result_id(query_id=509884)
-
-    # fetch query result
-    data = dune.query_result(result_id)
-    data2 = data['data']['get_result_by_result_id']
-
-    feeds = []
-    payouts = []
-
-    diction = {}
-
-    for datum in data2:
-
-        feedName = str(datum['data']['feed_name'])
-        payout = datum['data']['payouts_link']
-
-        # print(str(time) + ": " +
-        #       str(txnsCount) + " chainlink feed requests")
-
-        if feedName in diction:
-            diction[feedName] += payout
-        else:
-            diction[feedName] = payout
-
-    for key, value in diction.items():
-        if value > 55000:
-            feeds.append(key)
-            payouts.append(value)
-
-    plt.pie(payouts, labels=feeds, autopct='%1.1f%%')
-    plt.title('Most requested feeds')
-    plt.show()
-
-
 def chainlink_priceFeedsMostRequested2():
     # https://dune.xyz/queries/509884/963063
     result_id = dune.query_result_id(query_id=509884)
@@ -235,53 +199,89 @@ def chainlink_priceFeedsMostRequested2():
     plt.title('Most requested Chainlink feeds, Past year')
     plt.show()
 
-# get each member from "other" group to get real result
-def chainlink_dailyUniqueCustomersNoChainlink():
-    # https://dune.xyz/queries/574344
-    result_id = dune.query_result_id(query_id=574344)
+
+def chainlink_dailyUniqueConsumersNoChainlink():
+    # https://dune.xyz/queries/578702
+    result_id = dune.query_result_id(query_id=578702)
 
     # fetch query result
     data = dune.query_result(result_id)
     data2 = data['data']['get_result_by_result_id']
 
+    counts = []
     times = []
-    diction = {}
-    consumers=[]
 
     for datum in data2:
-        day =  datetime.fromisoformat(
+        count = datum['data']['count']
+        time = datetime.fromisoformat(
             datum['data']['day']).strftime('%b-%d-%Y')
 
-        if day not in diction:
-            diction[day] = 1
-        else:
-            diction[day] += 1
+        times.append(time)
+        counts.append(count)
 
-    for key in reversed(sorted(diction)):
-        times.append(key)
-        consumers.append(diction[key])
-
-    
     fig, ax = plt.subplots(figsize=(8, 6))
 
-    half_year_locator = mdates.MonthLocator(interval=1)
+    half_year_locator = mdates.MonthLocator(interval=3)
     # Locator for major axis only.
     ax.xaxis.set_major_locator(half_year_locator)
 
-    plt.plot(times, consumers)
-    plt.xticks(rotation=15)
-
-    plt.xlabel('Date')
-
-    plt.title('Daily Unique Customers, Chainlink excluded, Last 12 months')
+    plt.bar(times, counts)
+    plt.xticks(rotation=30)
+    plt.title('Daily Unique Chainlink Consumers, Chainlink excluded')
     plt.show()
 
 
-chainlink_dailyFeedRequests()
-chainlink_consumerFeedRequests()
-chainlink_consumerFeedRequestsNoChainlink()
-chainlink_priceFeedsMostRequested()
-chainlink_priceFeedsMostRequested2()
-# chainlink_dailyUniqueCustomersNoChainlink() #
+def chainlink_dailyUniqueConsumersNoChainlink2():
+   # https://dune.xyz/queries/578702    
+    # https://dune.xyz/queries/579473 this is for the unnamed contracts
+
+    result_id = dune.query_result_id(query_id=578702)
+    result_id2 = dune.query_result_id(query_id=579473)
+
+    # fetch query result
+    data = dune.query_result(result_id)
+    data2 = data['data']['get_result_by_result_id']
+
+    data3 = dune.query_result(result_id2)
+    data4 = data3['data']['get_result_by_result_id']
+
+    counts = []
+    counts2 = []
+    times = []
+
+    for datum in data2:
+        count = datum['data']['count']
+        time = datetime.fromisoformat(
+            datum['data']['day']).strftime('%b-%d-%Y')
+
+        times.append(time)
+        counts.append(count)
+    
+    for datum in data4:
+        count = datum['data']['count']
+        time = datetime.fromisoformat(
+            datum['data']['day']).strftime('%b-%d-%Y')
+        counts2.append(count)
+
+    final_counts=np.add(counts, counts2)
+
+    fig, ax = plt.subplots(figsize=(8, 6))
+
+    half_year_locator = mdates.MonthLocator(interval=3)
+    # Locator for major axis only.
+    ax.xaxis.set_major_locator(half_year_locator)
+
+    plt.bar(times, final_counts)
+    plt.xticks(rotation=30)
+    plt.title('Daily Unique Chainlink Consumers, Chainlink excluded')
+    plt.show()
+
+
+# chainlink_dailyFeedRequests()
+# chainlink_consumerFeedRequests()
+# chainlink_consumerFeedRequestsNoChainlink()
+# chainlink_priceFeedsMostRequested2()
 chainlink_consumerFeedRequestsNoChainlinkBAR()
+chainlink_dailyUniqueConsumersNoChainlink()
+# chainlink_dailyUniqueConsumersNoChainlink2()
 # https://dune.xyz/queries/509884/963063
